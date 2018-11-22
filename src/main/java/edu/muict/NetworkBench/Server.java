@@ -38,7 +38,11 @@ public class Server extends Thread {
 			msg = "Unable to attach to port!";
 			System.out.println(msg);
 			this.activityLog.insert(msg, 0);
-			System.exit(1);
+			// System.exit(1);
+		} catch (Exception e) {
+			msg = "Error starting server: " + e.getMessage();
+			this.activityLog.insert(msg, 0);
+			System.out.println(msg);
 		}
 		do {
 			this.handleClient();
@@ -54,11 +58,8 @@ public class Server extends Thread {
 			int numMessages = 0;
 			String message = input.nextLine(); // Step 4.
 			while (!message.equals("***CLOSE***")) {
-				String msg = "Message received.";
-				System.out.println(msg);
-				this.activityLog.insert(msg, 0);
 				numMessages++;
-				msg = " Message " + numMessages + ": " + message + "\n";
+				String msg = " Message " + numMessages + ": " + message + "\n";
 				output.println(msg); // Step 4. 
 				this.activityLog.insert(msg, 0);
 				message = input.nextLine();
