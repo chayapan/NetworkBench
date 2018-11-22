@@ -1,5 +1,6 @@
 package edu.muict.NetworkBench;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -44,7 +45,9 @@ public class Client extends Thread {
 	}
 	
 	public void run() {
-		this.accessServer();	
+		connect(); // Start connection.
+		activityLog.insert("Client thread on: " + host.toString() + "\n", 0);
+		// this.accessServer();	
 	}
 	
 	public Boolean connect() {
@@ -60,18 +63,16 @@ public class Client extends Thread {
 			} finally {
 				activityLog.insert("Connection opened to " + host.toString(), 0);
 			}
+			this.connected = true;
 			return true;
 		}
 	}
 
 	private void accessServer() {
 		try {
-			link = new Socket(host, PORT);
-			this.connected = true;
 			Scanner input = new Scanner(link.getInputStream());
 			// Step 2.
 			PrintWriter output = new PrintWriter(link.getOutputStream(), true);
-			// Set up stream for keyboard entry...
 			Scanner userEntry = new Scanner(System.in);
 
 			String message, response;
@@ -79,11 +80,10 @@ public class Client extends Thread {
 				System.out.print("Enter message: ");
 				message = userEntry.nextLine();
 				this.activityLog.insert(message +"\n", 0);
-				output.println(message); 
+				output.println(message);
 				response = input.nextLine();
 				System.out.println("\nSERVER>"+response);
 			} while (!message.equals("***CLOSE***"));
-
 			this.connected = false;
 		} catch (IOException ioEx) {
 			ioEx.printStackTrace();
@@ -134,12 +134,17 @@ public class Client extends Thread {
 		try {
 			Scanner input = new Scanner(link.getInputStream());
 			PrintWriter output = new PrintWriter(link.getOutputStream(), true);
-			for (int i = 0; i < 10000; i++) {
-				String msg = generateData(1); //message content
+			int sentCount = 0;
+			for (int i = 0; i < 1000; i++) {
+				String msg = generateData(10); //message content
 				output.println(msg);
-				// activityLog.insert("Response: " + input.nextLine() +"\n", 0);
+				sentCount += 1;
+				activityLog.insert("Wrote: "+ sentCount+"\n", 0);
 			}
-			output.println("***CLOSE***"); // Finish connection.
+			//new DataInputStream(link.getInputStream()).readFully(b4);
+			activityLog.insert("Response:" + input.nextLine() +"\n", 0);
+			// output.println("***CLOSE***"); // Finish connection.
+
 		} catch (IOException e) {
 			activityLog.insert("Error: " + e.getMessage() +"\n", 0);
 			e.printStackTrace();

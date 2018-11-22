@@ -62,8 +62,8 @@ public class App {
 
 
 		JPanel buttonPanel = new JPanel(new FlowLayout());
-		JButton clientButton = new JButton("Client");
-		JButton serverButton = new JButton("Server");
+		final JButton clientButton = new JButton("Client");
+		final JButton serverButton = new JButton("Server");
 
 		buttonPanel.add(clientButton);
 		buttonPanel.add(serverButton);
@@ -106,7 +106,6 @@ public class App {
 		clientButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				statusLabel.setText("Running Client Mode...");
-				activityLog.insert("Start client.\n", 0);
 				String addr = JOptionPane.showInputDialog("Target Server Address: ");
 
 				System.out.println(addr);
@@ -115,6 +114,7 @@ public class App {
 				try {
 					client = new Client(activityLog, addr, port);
 					client.start();
+					activityLog.insert("Client started. "+ addr + ":" + port +"\n", 0);
 					serverButton.setEnabled(false);
 				} catch (UnknownHostException e1) {
 					e1.printStackTrace();
@@ -188,6 +188,6 @@ public class App {
 		client.sendData();
 		Date d2 = new Date();
 		Long t = d2.getTime() - d1.getTime(); // gives the time difference in milliseconds.
-		activityLog.insert("Took " + t + "ms for" + 10000 + " messages\n", 0);
+		activityLog.insert("Took " + t + "ms to write " + 1000 + " 10KB messages.\n", 0);
 	}
 }

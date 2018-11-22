@@ -30,7 +30,7 @@ public class TestAppSkeleton extends TestCase {
 		System.out.println("Generate Data:" + rs);
 
 		Random r = new Random();
-		byte[] b = new byte[20000 * 1024 * 1024];
+		byte[] b = new byte[200 * 1024];
 		r.nextBytes(b);
 		System.out.println("Random Data: " + (b.length / 1024) + " KB:" + b.toString());
 	}

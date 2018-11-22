@@ -10,6 +10,7 @@ import javax.swing.JTextArea;
 
 public class Server extends Thread {
 
+	private Socket link;
 	private static ServerSocket serverSocket;
 	private static final int PORT = 1234;
 	private JTextArea activityLog;
@@ -50,12 +51,11 @@ public class Server extends Thread {
 	}
 
 	private void handleClient() {
-		Socket link = null;
 		try {
 			link = serverSocket.accept();
 			Scanner input = new Scanner(link.getInputStream());// Step 3.
 			PrintWriter output = new PrintWriter(link.getOutputStream(), true); // Step 3.
-			int numMessages = 0;
+			long numMessages = 0;
 			String message = input.nextLine(); // Step 4.
 			while (!message.equals("***CLOSE***")) {
 				numMessages++;
